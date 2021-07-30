@@ -1,0 +1,6 @@
+.vscode
+data
+_pycache_
+.ipynb_checkpoints
+*.pcap
+*.pcapng
