@@ -3,7 +3,7 @@ import time
 start_time = time.time()
 
 
-pcap_file="16-09-25.pcap"
+pcap_file="E:/OneDrive/1-Documents/1-PhD/2-Experiment/1-Experiment_1/data/processed/16-09-25.pcap"
 record = pyshark.FileCapture(pcap_file,display_filter="tcp")
 list_of_eth =[]
 for pkt in record:
@@ -20,6 +20,3 @@ unique_eth = list(set(list_of_eth))
 print(unique_eth)
 
 print("--- %s seconds ---" % (time.time() - start_time))
-#pkt.pretty_print()
-
-

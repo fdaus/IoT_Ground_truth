@@ -1,41 +1,82 @@
-from csv import DictReader
+#!/usr/bin/env python
+'''
+
+    Iot device isolation
+    Author: firdaus <fdaus.isa@gmail.com>
+
+    This program is an implementation of groundtruth https://github.com/fdaus/IoT_Ground_truth
+    
+    Device isolated, it takes input pcaps and group each packets according to its mac address.
+
+Usage: device_isolation.py <inputdir> <outputdir>
+
+Example:python device_isolation.py data pcap-isolated
+python device_isolation.py | Out-File -filepath isolation_log.txt
+'''
+#device_isolation.py -d <inputdir> [or] -i <inputpcap> -l <label> [and] -o <outputdir>
+
+import pandas as pd
 import os
-DUMP="./pcap-originals"
-ISOLATED="./pcap-isolated"
+import time
+
+
+DUMP="data_portion"
+ISOLATED="pcap-isolated"
+DEVICE="unsw_devicelist.csv"
 TSHARK="tshark"
+FILENUMBER=1
+
 def ret_pcaps():
     files = os.listdir(DUMP)
     pcap_files = []
     for file in files:
-        if '.pcap' in file:
+        if '.pcap' in file or '.pcapng' in file:
             pcap_files.append(DUMP+'/'+file)
     return pcap_files
 
-#allpcaps = ret_pcaps()
-#cmd = "mergecap -w merged.pcap /mnt/e/OneDrive/1-Documents/1-PhD/2-Experiment/Ground_truth/*.pcap"
-#os.system(cmd)
-""" for device in devices:
-    if "address" in devices[device]:
-         print("Isolating address {} for device {}".format(devices[device]["address"], device))
-        cmd = "tcpdump -r merged.pcap -s0 -w {}/{}.pcap 'ether host {}'".format(ISOLATED, device, devices[device]["ether"])
-        print(cmd)
-        os.system(cmd) """
-with open('non-iot_device.csv', 'r') as read_obj:
-    csv_dict_reader = DictReader(read_obj,fieldnames=...)
-    for device in csv_dict_reader:
-    
-      
-        print("Isolating address {} for device {}".format(device["eth_addr"], device['Devices']))
- 
-        cmd = "tcpdump -r merged.pcap -s0 -w {}/{}.pcap 'ether host {}'".format(ISOLATED, device, device['eth_addr'])
-        print(cmd)
-        #os.system(cmd)
-        print("here 3 eth:{}",device)
-    print("here 4")
-# tcpdump -r non-iot.pcapng -s0 -w "./pcap-isolated/device_A.pcap" 'ether host 34:97:f6:59:1c:f9' # tcpdump -r non-iot.pcapng -s0 -w "./pcap-isolated/device_B.pcap" 'ether host d4:5e:ec:6f:76:6c'
+def create_outputdir(outputdir,device_label):
 
-# split unidirectional flow
-#SplitCap.exe -r device_A.pcap -s flow -o .\pcap-isolated\
+    dirpath=outputdir+'/'+device_label
+    if not os.path.isdir(dirpath):
+        os.makedirs(dirpath)
 
-#split mac address
-# SplitCap.exe -r 16-09-25.pcap -s mac -o .\pcap-mac_addr\
+def get_time():
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+    return current_time
+
+def main():
+    allpcaps = ret_pcaps()
+    print(len(allpcaps)," pcap files")
+
+    device = pd.read_csv(DEVICE)
+    j=FILENUMBER
+    for pcap_file in allpcaps:
+        i=0
+        
+        print("Examining pcap file ",j)
+        print("start time ",get_time())
+        while i < device.shape[0]:
+            
+            print("\nfrom {}".format(pcap_file))
+            print("\nIsolating address "+device.iloc[i,1]+" for device "+device.iloc[i,0])
+            
+            create_outputdir(ISOLATED,device.iloc[i,0])
+
+            cmd ='tshark -r {} -Y "eth.addr eq {}" -w "{}/{}/{}.pcap"'.format(pcap_file,device.iloc[i,1],ISOLATED, device.iloc[i,0],j )
+            
+            os.system(cmd)
+            
+            print("\nComplete: {}".format(device.iloc[i,0]))
+            i+= 1
+        
+        j+=1
+        print("End time",get_time())
+        print("\n#############################################################")
+        
+    print("siap")
+
+start = time.time()
+main()
+end = time.time()
+print("\nProgram execution time is :", end-start)

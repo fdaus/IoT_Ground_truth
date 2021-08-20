@@ -1,0 +1,4 @@
+#error log for device_isolation.py
+
+** (tshark.exe:22572): WARNING **: Dissector bug, protocol MP2T, in packet 519409: C:\buildbot\builders\wireshark-3.4-64\windows-2019-x64\build\epan\packet.c:775: failed assertion "saved_layers_len < 500"
+** (tshark.exe:19872): WARNING **: Dissector bug, protocol HTTP, in packet 2306318: C:\buildbot\builders\wireshark-3.4-64\windows-2019-x64\build\epan\packet.c:775: failed assertion "saved_layers_len < 500"

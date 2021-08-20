@@ -1,4 +1,0 @@
-Devices,eth_addr,Connection,Category,Label
-Desktop,34:97:f6:59:1c:f9,Wired,Non IoT,Non IoT
-TPlink Router,d4:6e:0e:af:00:28,Gateway,Non IoT,Non IoT
-Mibox TV,d4:5e:ec:6f:76:6c,Wireless,Appliances,IoT
