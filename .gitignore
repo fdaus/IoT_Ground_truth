@@ -3,4 +3,6 @@ _pycache_
 .ipynb_checkpoints
 *.pcap
 *.pcapng
+pcap-isolated
+data
 code
