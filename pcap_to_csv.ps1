@@ -49,7 +49,7 @@ ForEach-Object {
         -e tcp.flags -e tcp.analysis.ack_rtt -e tcp.segments -e tcp.segment.count -e tcp.reassembled.length -e tcp.time_relative -e tcp.time_delta `
         -e http.request -e http.response -e http.content_type -e http.content_length `
         -e udp.stream -e udp.port -e udp.dstport -e udp.srcport -e udp.time_delta -e udp.time_relative -e udp.pdu.size -e udp.length -e udp.payload `
-        -e frame.time_relative -e frame.time_delta | Out-File -filepath $csvfile -Encoding utf8
+        -e frame.time_relative -e frame.time_delta -e frame.time | Out-File -filepath $csvfile -Encoding utf8
         Write-Output "saved to $csvfile"
     }
 
