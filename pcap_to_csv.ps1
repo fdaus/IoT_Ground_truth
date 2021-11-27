@@ -1,45 +1,18 @@
-# This script extracting traffic features from pcap files, it takes input pcaps and save to csv.
-Write-Output ".\pcap_to_csv.ps1 'G:\My Drive\UNSW_pcap-isolated' 'G:\My Drive\UNSW_pcap-isolated_csv'"
+param ([Parameter(Mandatory)]$path_to_pcap, [Parameter(Mandatory)]$path_to_save)
 
-$arg0= "G:\My Drive\UNSW_pcap-isolated" #$args[0]
-$arg1= "G:\My Drive\UNSW_pcap-isolated_csv" #$args[1]
+Write-Output "`r`nThis script extracting traffic features from pcap files, it takes input pcaps and save to csv."
+#Write-Output ".\pcap_to_csv.ps1 'path\to\pcap' 'path\to\csv'"
+
+
 $time1 = Get-Date
 
-function Save-PdFolder {
-    param (
-        [Parameter()]
-        [string]
-        $PdPath
-    )
-
-    If(!(test-path $PdPath))
-    {
-        Write-Output "create save folder $PdPath"
-        New-Item -ItemType Directory -Force -Path $Pdpath | Out-Null
-    }
-    else {
-        Write-Output "save folder existed $PdPath"
-    }    
-}
-
-
-
-Get-ChildItem $arg0 -Directory |
-ForEach-Object {
-    Write-Output `n $_.BaseName
-    $pcapfolder = $arg0 + "\" + $_.BaseName
-    Write-Output $pcapfolder
-    $savefolder = $arg1 + "\" + $_.BaseName
-    Save-PdFolder -PdPath $savefolder
-
-    Get-ChildItem $pcapfolder  -Filter *.pcap |
+Get-ChildItem $path_to_pcap  -recurse | Where-Object {$_.extension -in ".pcap",".pcapng"} |
     Foreach-Object {
         $pcapfile = $_.FullName
-        $csvfile = $savefolder+'\'+$_.BaseName+'.csv'
+        $csvfile = $path_to_save +'\'+$_.BaseName+'.csv'
         #$csvfile = $_.DirectoryName+"\"+ $_.BaseName+".csv" #save to the same directory
-        Write-Output $_.Name
         
-        Write-Output "processing $pcapfile" 
+        Write-Output "`r`nprocessing $pcapfile" 
         tshark.exe -r $pcapfile -T fields -E header=y -E separator=',' -E quote=d -E occurrence=f `
         -e eth.addr -e eth.src -e eth.dst -e eth.len `
         -e dns.qry.name -e dns.resp.name `
@@ -53,8 +26,6 @@ ForEach-Object {
         Write-Output "saved to $csvfile"
     }
 
-    
-}
 $time2 = Get-Date
 $duration = $time2 - $time1
 Write-Output $duration
