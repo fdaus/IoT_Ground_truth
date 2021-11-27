@@ -1,6 +1,6 @@
 param ([Parameter(Mandatory)]$path_to_pcap, [Parameter(Mandatory)]$path_to_save)
 
-Write-Output "`r`nThis script extracting traffic features from pcap files, it takes input pcaps and save to csv."
+Write-Output "`r`nThis script extracting traffic features from pcap files using tshark, it takes input pcaps and save to csv."
 #Write-Output ".\pcap_to_csv.ps1 'path\to\pcap' 'path\to\csv'"
 
 
